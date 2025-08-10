@@ -134,18 +134,14 @@ export default async function handler(req, res) {
     const isNotPrivate = webhook.private !== true;
     const hasContent = webhook.content && webhook.content.trim() !== '';
     
-    // For contacts, the sender won't have certain agent-specific fields
-    // Let's check if this is NOT an agent by looking for agent-specific indicators
-    const isNotAgent = !webhook.sender.role && !webhook.sender.account_id;
-    
     console.log("Conditions check:");
     console.log("- Is incoming:", isIncoming);
     console.log("- Is message created event:", isMessageCreated);
-    console.log("- Is not agent:", isNotAgent);
     console.log("- Is not private:", isNotPrivate);
     console.log("- Has content:", hasContent);
     
-    const shouldProcess = isIncoming && isMessageCreated && isNotAgent && isNotPrivate && hasContent;
+    // Align with working reference implementation: do not gate on agent fields
+    const shouldProcess = isIncoming && isMessageCreated && isNotPrivate && hasContent;
     
     if (!shouldProcess) {
       console.log("Skipping message - not eligible for processing");
